@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ContentTargetFolders>.</ContentTargetFolders>
+        <Product>Umbraco.Lexicon</Product>
+        <PackageId>Umbraco.Lexicon</PackageId>
+        <Title>Umbraco.Lexicon</Title>
+        <Description>...</Description>
+        <Product>...</Product>
+        <PackageTags>umbraco plugin package</PackageTags>
+        <RootNamespace>Umbraco.Lexicon</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.1.2" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="App_Plugins\Umbraco.Lexicon\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+        <None Include="build\**\*.*">
+            <Pack>True</Pack>
+            <PackagePath>buildTransitive</PackagePath>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="App_Plugins\Umbraco.Lexicon\LexikonDashboard.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="App_Plugins\Umbraco.Lexicon\views\lexicon-dashboard.html" />
+    </ItemGroup>
+</Project>
