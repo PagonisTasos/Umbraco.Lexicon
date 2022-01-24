@@ -9,7 +9,7 @@
         <Product>...</Product>
         <PackageTags>umbraco plugin package</PackageTags>
         <RootNamespace>Umbraco.Lexicon</RootNamespace>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,10 +26,6 @@
             <Pack>True</Pack>
             <PackagePath>buildTransitive</PackagePath>
         </None>
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="App_Plugins\Umbraco.Lexicon\models\readme.txt" />
     </ItemGroup>
 
     <ItemGroup>

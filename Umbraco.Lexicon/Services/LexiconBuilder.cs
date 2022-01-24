@@ -45,7 +45,7 @@ namespace Umbraco.Lexicon
             stringBuilder.AppendLine("    }");
             stringBuilder.AppendLine("}");
 
-            var filepath = System.IO.Path.Combine(Environment.ContentRootPath, "App_Plugins\\Umbraco.Lexicon\\models\\Lexicon.generated.cs");
+            var filepath = System.IO.Path.Combine(Environment.ContentRootPath, "Lexicon.generated.cs");
             System.IO.File.WriteAllText(filepath, stringBuilder.ToString());
         }
 
