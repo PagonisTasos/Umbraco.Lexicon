@@ -22,6 +22,34 @@ namespace Umbraco.Lexicon
 
         public void Build()
         {
+            BuildLexicon();
+            BuildComposer();
+        }
+
+        public void BuildComposer()
+        {
+            var sb = new StringBuilder(string.Empty);
+            sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+            sb.AppendLine("using Umbraco.Cms.Core.Composing;");
+            sb.AppendLine("using Umbraco.Cms.Core.DependencyInjection;");
+            sb.AppendLine();
+            sb.AppendLine("namespace Umbraco.Lexicon");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class LexiconComposer : IComposer");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public void Compose(IUmbracoBuilder builder)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            builder.Services.AddScoped<Lexicon>();");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            var filepath = System.IO.Path.Combine(Environment.ContentRootPath, "LexiconComposer.generated.cs");
+            System.IO.File.WriteAllText(filepath, sb.ToString());
+        }
+
+        public void BuildLexicon()
+        {
             var roots = LocalizationService.GetRootDictionaryItems();
 
             stringBuilder.AppendLine("using Umbraco.Cms.Web.Common;");
