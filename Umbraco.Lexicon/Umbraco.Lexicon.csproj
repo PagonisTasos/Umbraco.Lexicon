@@ -2,14 +2,18 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <ContentTargetFolders>.</ContentTargetFolders>
-        <Product>Umbraco.Lexicon</Product>
-        <PackageId>Umbraco.Lexicon</PackageId>
+        <Product>UmbLexicon</Product>
+        <PackageId>UmbLexicon</PackageId>
         <Title>Umbraco.Lexicon</Title>
-        <Description>...</Description>
-        <Product>...</Product>
+        <Description>
+			An Umbraco Cms plugin package for strong typed access of Umbraco dictionary items. The package adds a dashboard in Umbraco backoffice settings, which enables generation of a static class exposing the existing dicrionary items in a strong typed manner. Generation is available in development environment only.
+		</Description>
+		<PackageProjectUrl>https://github.com/PagonisTasos/Umbraco.Lexicon</PackageProjectUrl>
         <PackageTags>umbraco plugin package</PackageTags>
         <RootNamespace>Umbraco.Lexicon</RootNamespace>
-		<Version>1.0.10</Version>
+		<Version>1.1.0</Version>
+		<Authors>Pagonis Tasos</Authors>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
