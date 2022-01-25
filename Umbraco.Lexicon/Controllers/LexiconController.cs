@@ -19,7 +19,7 @@ namespace UmbracoLexikonTest.App_Plugins.Umbraco.Lexicon.controllers
         public ActionResult BuildLexicon()
         {
 #if DEBUG
-            lexiconBuilder.Build();
+            lexiconBuilder.BuildLexicon();
             return Ok("");
 #endif
             return Conflict("Cant perform this action in release mode."); 

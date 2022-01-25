@@ -12,103 +12,110 @@ namespace Umbraco.Lexicon
         private ILocalizationService LocalizationService { get; }
         private IWebHostEnvironment Environment { get; }
 
-        private StringBuilder stringBuilder = new StringBuilder(string.Empty);
-        private const string oneTab = "    ";
+        private StringBuilder _sb = new StringBuilder(string.Empty);
+        const string tab = "    ";
+        private List<string> usings = new List<string>
+        {
+            "Umbraco.Cms.Web.Common;"
+            , "Umbraco.Cms.Core.Composing;"
+        };
+
         public LexiconBuilder(ILocalizationService localizationService, IWebHostEnvironment environment)
         {
             LocalizationService = localizationService;
             Environment = environment;
         }
 
-        public void Build()
-        {
-            BuildLexicon();
-            BuildComposer();
-        }
-
-        public void BuildComposer()
-        {
-            var sb = new StringBuilder(string.Empty);
-            sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
-            sb.AppendLine("using Umbraco.Cms.Core.Composing;");
-            sb.AppendLine("using Umbraco.Cms.Core.DependencyInjection;");
-            sb.AppendLine();
-            sb.AppendLine("namespace Umbraco.Lexicon");
-            sb.AppendLine("{");
-            sb.AppendLine("    public class LexiconComposer : IComposer");
-            sb.AppendLine("    {");
-            sb.AppendLine("        public void Compose(IUmbracoBuilder builder)");
-            sb.AppendLine("        {");
-            sb.AppendLine("            builder.Services.AddScoped<Lexicon>();");
-            sb.AppendLine("        }");
-            sb.AppendLine("    }");
-            sb.AppendLine("}");
-
-            var filepath = System.IO.Path.Combine(Environment.ContentRootPath, "LexiconComposer.generated.cs");
-            System.IO.File.WriteAllText(filepath, sb.ToString());
-        }
-
         public void BuildLexicon()
+        {
+
+            AddUsings();
+            BeginNamespace();
+                AddLexiconComposer();
+                AddLexiconClass();
+            EndNamespace();
+
+            SaveGeneratedFile();
+        }
+
+        private void AddUsings()
+        {
+            foreach (var @using in usings)
+            {
+                _sb.AppendLine($"using {@using}");
+            }
+            _sb.AppendLine("");
+        }
+        private void BeginNamespace()
+        {
+            _sb.AppendLine("namespace Umbraco.Lexicon");
+            _sb.AppendLine("{");
+        }
+        private void EndNamespace()
+        {
+            _sb.AppendLine("}");
+        }
+        private void AddLexiconComposer()
+        {
+            _sb.AppendLine($"{tab}public class LexiconComposer: ComponentComposer<LexiconComponent> {{ }}");
+            _sb.AppendLine($"{tab}");
+            _sb.AppendLine($"{tab}public class LexiconComponent : IComponent");
+            _sb.AppendLine($"{tab}{{");
+            _sb.AppendLine($"{tab}{tab}private readonly IUmbracoHelperAccessor accessor;");
+            _sb.AppendLine($"{tab}{tab}");
+            _sb.AppendLine($"{tab}{tab}public LexiconComponent(IUmbracoHelperAccessor accessor) => this.accessor = accessor;");
+            _sb.AppendLine($"{tab}{tab}public void Initialize() => Lexicon.Configure(this.accessor);");
+            _sb.AppendLine($"{tab}{tab}public void Terminate() {{ }}");
+            _sb.AppendLine($"{tab}}}");
+        }
+        private void AddLexiconClass()
         {
             var roots = LocalizationService.GetRootDictionaryItems();
 
-            stringBuilder.AppendLine("using Umbraco.Cms.Web.Common;");
-            stringBuilder.AppendLine();
-            stringBuilder.AppendLine("namespace Umbraco.Lexicon");
-            stringBuilder.AppendLine("{");
-            stringBuilder.AppendLine("    public partial class Lexicon");
-            stringBuilder.AppendLine("    {");
-            stringBuilder.AppendLine("        public Lexicon(UmbracoHelper umbracoHelper)");
-            stringBuilder.AppendLine("        {");
-            stringBuilder.AppendLine("            UmbracoHelper = umbracoHelper;");
-            stringBuilder.AppendLine("        }");
-            stringBuilder.AppendLine("        ");
-            stringBuilder.AppendLine("        private UmbracoHelper UmbracoHelper { get; }");
+            _sb.AppendLine($"{tab}public static partial class Lexicon");
+            _sb.AppendLine($"{tab}{{");
+            _sb.AppendLine($"{tab}{tab}private static IUmbracoHelperAccessor _accessor;");
+            _sb.AppendLine($"{tab}{tab}private static string Get(string key) => _accessor.TryGetUmbracoHelper(out UmbracoHelper umbracoHelper) ? umbracoHelper.GetDictionaryValue(key) : null;");
+            _sb.AppendLine($"{tab}{tab}public static void Configure(IUmbracoHelperAccessor accessor) => _accessor = accessor;");
+            _sb.AppendLine($"{tab}{tab}");
 
             foreach (var root in roots)
             {
-                WriteLemma_or_childrenStructs_for_dictionaryNode(root, oneTab + oneTab);
+                Add_Lemma_or_Struct_for_dictionaryNode(root, $"{tab}{tab}");
             }
 
-            stringBuilder.AppendLine("    }");
-            stringBuilder.AppendLine("}");
-
-            var filepath = System.IO.Path.Combine(Environment.ContentRootPath, "Lexicon.generated.cs");
-            System.IO.File.WriteAllText(filepath, stringBuilder.ToString());
+            _sb.AppendLine($"{tab}}}");
         }
-
-        public void WriteLemma_or_childrenStructs_for_dictionaryNode(IDictionaryItem node, string tabs)
+        private void Add_Lemma_or_Struct_for_dictionaryNode(IDictionaryItem node, string tabs)
         {
             var lemma_key = node.ItemKey.Split(".").Last();
-
             var lemma_guid = node.Key;
             var lemma_children = LocalizationService.GetDictionaryItemChildren(lemma_guid);
 
             if (lemma_children.Any())
             {
-                stringBuilder.AppendLine($"{tabs}public class {lemma_key}Class");
-                stringBuilder.AppendLine($"{tabs}{{");
+                _sb.AppendLine($"{tabs}public struct {lemma_key}");
+                _sb.AppendLine($"{tabs}{{");
 
-                stringBuilder.AppendLine($"{tabs}{oneTab}public {lemma_key}Class(UmbracoHelper umbracoHelper)");
-                stringBuilder.AppendLine($"{tabs}{oneTab}{{");
-                stringBuilder.AppendLine($"{tabs}{oneTab}     UmbracoHelper = umbracoHelper;");
-                stringBuilder.AppendLine($"{tabs}{oneTab}}}");
-                stringBuilder.AppendLine($"{tabs}{oneTab}");
-                stringBuilder.AppendLine($"{tabs}{oneTab}private UmbracoHelper UmbracoHelper {{ get; }}");
                 foreach (var child in lemma_children)
                 {
-                    WriteLemma_or_childrenStructs_for_dictionaryNode(child, tabs + oneTab);
+                    Add_Lemma_or_Struct_for_dictionaryNode(child, tabs + tab);
                 }
 
-                stringBuilder.AppendLine($"{tabs}}}");
-                stringBuilder.AppendLine($"{tabs}public {lemma_key}Class {lemma_key} => new {lemma_key}Class(UmbracoHelper);");
+                _sb.AppendLine($"{tabs}}}");
             }
             else
             {
-                stringBuilder.AppendLine($"{tabs}public string {lemma_key} => UmbracoHelper.GetDictionaryValue(\"{node.ItemKey}\");");
+                _sb.AppendLine($"{tabs}public static string {lemma_key} => Get(\"{node.ItemKey}\");");
             }
 
 
         }
+        public void SaveGeneratedFile()
+        {
+            var filepath = System.IO.Path.Combine(Environment.ContentRootPath, "Lexicon.generated.cs");
+            System.IO.File.WriteAllText(filepath, _sb.ToString());
+        }
     }
+
 }

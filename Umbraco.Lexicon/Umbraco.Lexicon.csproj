@@ -9,7 +9,7 @@
         <Product>...</Product>
         <PackageTags>umbraco plugin package</PackageTags>
         <RootNamespace>Umbraco.Lexicon</RootNamespace>
-		<Version>1.0.3</Version>
+		<Version>1.0.5</Version>
     </PropertyGroup>
 
     <ItemGroup>
