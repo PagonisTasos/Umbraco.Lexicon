@@ -6,8 +6,8 @@
 
     function generate() {
         lexiconBuilderResource.buildLexicon().then(
-            (result) => notificationsService.success("Lexicon generated", "Lexicon.generated.cs has been overridden"),
-            () => notificationsService.error("Generation Failed", "Generation is only available in debug mode. Check the logs for more info.")
+            (result) => notificationsService.success("Lexicon generated", "Lexicon.generated.cs was created successfully."),
+            () => notificationsService.error("Generation Failed", "Generation is only available in development environment.")
         );
     }
 }
