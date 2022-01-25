@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.BackOffice.Controllers;
 using Umbraco.Lexicon;
 
-namespace UmbracoLexikonTest.App_Plugins.Umbraco.Lexicon.controllers
+namespace Umbraco.Lexicon
 {
     public class LexiconController : UmbracoAuthorizedApiController
     {
@@ -18,11 +18,8 @@ namespace UmbracoLexikonTest.App_Plugins.Umbraco.Lexicon.controllers
         [HttpPost]
         public ActionResult BuildLexicon()
         {
-#if DEBUG
             lexiconBuilder.BuildLexicon();
-            return Ok("");
-#endif
-            return Conflict("Cant perform this action in release mode."); 
+            return Ok();
         }
     }
 }

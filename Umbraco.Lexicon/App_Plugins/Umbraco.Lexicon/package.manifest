@@ -1,12 +1,4 @@
 ﻿{
-    "dashboards":  [
-        {
-            "alias": "lexicon builder",
-            "view":  "/App_Plugins/Umbraco.Lexicon/views/dashboard.html",
-            "sections":  [ "settings" ],
-            "weight": 45
-        }
-    ],
     "javascript": [
       "~/App_Plugins/Umbraco.Lexicon/js/lexiconbuilder.resource.js",
       "~/App_Plugins/Umbraco.Lexicon/js/lexiconbuilder.controller.js"
