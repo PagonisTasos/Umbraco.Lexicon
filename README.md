@@ -1,11 +1,11 @@
 # Umbraco.Lexicon
 
 
-================================================
+===========================
 This package has been deprecated as it is legacy and is no longer maintained.
 Suggested Alternatives
 Qualia.Umb.Lexicon
-================================================
+===========================
 
 
 An Umbraco Cms plugin package for strong typed access of Umbraco dictionary items. 
